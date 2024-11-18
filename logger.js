@@ -10,3 +10,4 @@ module.exports.log = log;   // udostepnia poza modul wiec
 module.exports.endPoint = url; // jakby zmienia na public 
 
 console.log(module);
+console.log('heheh');
