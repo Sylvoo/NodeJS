@@ -1,0 +1,14 @@
+{
+  "name": "server_app",
+  "version": "0.0.1",
+  "description": "My project ",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Sylwester Slusarczyk",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.21.1"
+  }
+}
