@@ -16,7 +16,9 @@ const ClientMess = [];
 
 function generateUuid() {
   // sprawdza czy sie nie powtorzy, sprawdz czy nie istnieje wbudowana w Node metoda
-  return 1111; // unique value
+const { randomUUID } = require('crypto'); // Added in: node v14.17.0
+
+  return randomUUID(); // unique value
 }
 
 ///////////////////////
@@ -24,7 +26,7 @@ function generateUuid() {
 app.use(express.json());
 
 app.get('/', (req, res) => {
-  res.send('Hello World!');
+  res.send('Hello User!! Welcome on my server :)');
 })
 app.post('/signin',(req, res) => { // zmieniam stan serwera 
   // co dostaje? -> dostajemy Nick klienta
