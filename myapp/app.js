@@ -13,12 +13,34 @@ const ClientDatabase = [];
 const ClientMess = [];
 
 //////////////// modul /////
+/*function checkId(UID,ClientDatabase)
+{
+  for ( i in ClientDatabase)
+  {
+    if (i == UID)
+    {
+      err = 1;
+    }
+  }
+  if (err = 1)
+    {
+      return false;
+    }
+    else return true;
+}
+*/
 
 function generateUuid() {
   // sprawdza czy sie nie powtorzy, sprawdz czy nie istnieje wbudowana w Node metoda
 const { randomUUID } = require('crypto'); // Added in: node v14.17.0
-
-  return randomUUID(); // unique value
+  
+x = randomUUID();
+/*if (checkId(x,ClientDatabase)){
+  return x
+}
+else generateUuid(); // unique value
+*/
+return x;
 }
 
 ///////////////////////
