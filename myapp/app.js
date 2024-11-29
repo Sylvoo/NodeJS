@@ -9,8 +9,8 @@ const port = 10000;
 }
 
 */
-const ClientDatabase = [];
-const ClientMess = [];
+const clientDatabase = [];
+const clientMess = [];
 
 //////////////// modul /////
 /*function checkId(UID,ClientDatabase)
@@ -58,9 +58,15 @@ app.post('/signin',(req, res) => { // zmieniam stan serwera
     nick : req.query["nick"],
     clientId : generateUuid()
   }
-
-  ClientDatabase.push(entry);
+ 
+  clientDatabase.push(entry);
   res.status(201).send(entry);
+  console.log(clientDatabase);
+
+  const fs = require('fs');
+  fs.writeFileSync("clientDatabase.json", JSON.stringify(clientDatabase))
+
+
 })
 
 app.put('/msg',(req, res) => {  // rejest danych na serwerze 
@@ -74,7 +80,7 @@ app.put('/msg',(req, res) => {  // rejest danych na serwerze
     synchroStatus : false,
     date : Date.now()
   }
-  ClientMess.push(messageDatabaseItem)
+  clientMess.push(messageDatabaseItem)
   res.status(201);
   res.send();
 })

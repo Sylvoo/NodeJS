@@ -6,13 +6,13 @@ var pathObj = path.parse(__filename);
 console.log(pathObj);
 
 /*
-
+  {
   root: 'C:\\',
-  dir: 'C:\\Coding\\NodeJS',
-  base: 'test.js',
+  dir: 'C:\\Coding\\NodeJS\\codeWithMosh',
+  base: 'pathDOTparse.js',
   ext: '.js',
-  name: 'test'
-
+  name: 'pathDOTparse'
+}
 */
 
 
