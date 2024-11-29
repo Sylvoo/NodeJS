@@ -33,6 +33,7 @@ const clientMess = [];
 function generateUuid() {
   // sprawdza czy sie nie powtorzy, sprawdz czy nie istnieje wbudowana w Node metoda
 const { randomUUID } = require('crypto'); // Added in: node v14.17.0
+
   
 x = randomUUID();
 /*if (checkId(x,ClientDatabase)){
@@ -64,10 +65,25 @@ app.post('/signin',(req, res) => { // zmieniam stan serwera
   console.log(clientDatabase);
 
   const fs = require('fs');
-  fs.writeFileSync("clientDatabase.json", JSON.stringify(clientDatabase))
+  fs.readFile('myapp/clientDatabase.json', 'utf8', (err, data) => {
+    if (err){
+      console.error('Error',err)
+    }
+    let jsonData = JSON.parse(data);
+    const newData = JSON.parse(JSON.stringify(entry));
+    jsonData.push(newData);
 
-
-})
+    fs.writeFile('myapp/clientDatabase.json', JSON.stringify(jsonData, null, 2), (err) => {
+      if (err){
+        console.error('Error',err)
+    }
+    else{
+      console.log("ok");
+    }
+  }
+)
+  });
+});
 
 app.put('/msg',(req, res) => {  // rejest danych na serwerze 
   // co dostaje? -> dostajemy dane od klienta do zapisu w bazie wiadomosci
