@@ -1,14 +1,9 @@
+const { error } = require('console');
 const express = require('express')
 const app = express()
 const port = 10000;
 
-/*
-{
-  nick : "ala",
-  clientId : "1234-5678"
-}
 
-*/
 const clientDatabase = [];
 const clientMess = [];
 
@@ -52,8 +47,8 @@ app.get('/', (req, res) => {
   res.send('Hello User!! Welcome on my server :)');
 })
 app.post('/signin',(req, res) => { // zmieniam stan serwera 
-  // co dostaje? -> dostajemy Nick klienta
-  // co zwracam? -> generujemy unikalny CLIENT ID, zapis do bazy danych klientow, zwracamy status powowdzenia akcji oraz CLIENT ID
+  // co dostaje? -> dostajemy Nick klienta [DONE!]
+  // co zwracam? -> generujemy unikalny CLIENT ID, zapis do bazy danych klientow, zwracamy status powowdzenia akcji oraz CLIENT ID [DONE]
   
   const entry = {
     nick : req.query["nick"],
@@ -79,6 +74,8 @@ app.post('/signin',(req, res) => { // zmieniam stan serwera
     }
     else{
       console.log("ok");
+      res.status(201);
+      res.send();
     }
   }
 )
@@ -96,15 +93,37 @@ app.put('/msg',(req, res) => {  // rejest danych na serwerze
     synchroStatus : false,
     date : Date.now()
   }
-  clientMess.push(messageDatabaseItem)
-  res.status(201);
-  res.send();
+  clientMess.push(messageDatabaseItem, (err) =>{
+    if(!err)
+    {
+      res.status(201);
+      res.send();
+    }
+    else{error("PROBLEM", err);}
+  })
+  
 })
 
 app.get('/msg',(req, res) => { // otrzymujemy
   // co dostaje? -> Client ID 
   // co zwracam? -> lista damych dla niego oraz zmieniam status wiadomosci na dostarczone do klienta  
-  res.status(310).send(`Get message: ${ req.query["client_id"]}`); 
+
+ 
+
+const fs = require('fs');
+const rawData = fs.readFileSync('myapp/clientDatabase.json', 'utf8');
+const jsonData = JSON.parse(rawData);
+
+
+jsonData.forEach(element => {
+    if(element.clientId === req.body["client_id"]){
+        console.log(`ZNALEZIONO: ${element.nick}, twoj id to: ${element.clientId}`);
+        res.status(200).send(`Approved, we have you in our Database ${element.nick}`)
+    }
+    
+});
+send(`Get message: ${ req.body["client_id"]}`); 
+  
 })
 
 

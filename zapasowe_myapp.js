@@ -65,23 +65,25 @@ app.post('/signin',(req, res) => { // zmieniam stan serwera
   console.log(clientDatabase);
 
   const fs = require('fs');
-  // var obj = {clientDatabase};
-  // var json = JSON.stringify(obj);
-  // fs.readFile('myapp/clientDatabase.json', 'utf8', (err, data) => {
-  //   if(err)
-  //   {
-  //     console.log(err);
-  //   }
-  //   obj = JSON.parse(data);
-  //   obj.clientDatabase.push(entry);
-  //   json = JSNO.stringify(obj)
-  //   fs.writeFile('myapp/clientDatabase.json', json, 'utf8', (err) => err && console.error(err))
-    
-  // });
-  fs.writeFileSync("myapp/clientDatabase.json", JSON.stringify(clientDatabase), 'utf8')
+  fs.readFile('myapp/clientDatabase.json', 'utf8', (err, data) => {
+    if (err){
+      console.error('Error',err)
+    }
+    let jsonData = JSON.parse(data);
+    const newData = JSON.parse(JSON.stringify(entry));
+    jsonData.push(newData);
 
-
-})
+    fs.writeFile('myapp/clientDatabase.json', JSON.stringify(jsonData, null, 2), (err) => {
+      if (err){
+        console.error('Error',err)
+    }
+    else{
+      console.log("ok");
+    }
+  }
+)
+  });
+});
 
 app.put('/msg',(req, res) => {  // rejest danych na serwerze 
   // co dostaje? -> dostajemy dane od klienta do zapisu w bazie wiadomosci
