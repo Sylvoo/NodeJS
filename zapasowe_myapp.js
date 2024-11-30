@@ -1,16 +1,11 @@
+const { error } = require('console');
 const express = require('express')
 const app = express()
 const port = 10000;
 
-/*
-{
-  nick : "ala",
-  clientId : "1234-5678"
-}
 
-*/
 const clientDatabase = [];
-const clientMess = [];
+const clientMessDatabase = [];
 
 //////////////// modul /////
 /*function checkId(UID,ClientDatabase)
@@ -52,8 +47,8 @@ app.get('/', (req, res) => {
   res.send('Hello User!! Welcome on my server :)');
 })
 app.post('/signin',(req, res) => { // zmieniam stan serwera 
-  // co dostaje? -> dostajemy Nick klienta
-  // co zwracam? -> generujemy unikalny CLIENT ID, zapis do bazy danych klientow, zwracamy status powowdzenia akcji oraz CLIENT ID
+  // co dostaje? -> dostajemy Nick klienta [DONE!]
+  // co zwracam? -> generujemy unikalny CLIENT ID, zapis do bazy danych klientow, zwracamy status powowdzenia akcji oraz CLIENT ID [DONE]
   
   const entry = {
     nick : req.query["nick"],
@@ -79,6 +74,8 @@ app.post('/signin',(req, res) => { // zmieniam stan serwera
     }
     else{
       console.log("ok");
+      res.status(201);
+      res.send();
     }
   }
 )
@@ -96,22 +93,52 @@ app.put('/msg',(req, res) => {  // rejest danych na serwerze
     synchroStatus : false,
     date : Date.now()
   }
-  clientMess.push(messageDatabaseItem)
-  res.status(201);
-  res.send();
-})
+  console.log(messageDatabaseItem);
+  clientMessDatabase.push(messageDatabaseItem)
+  console.log(clientMessDatabase)
 
-app.get('/msg',(req, res) => { // otrzymujemy
+  const fs = require('fs');
+  fs.readFile('myapp/clientMessDatabase.json', 'utf8', (err, data) => {
+    if (err){
+      console.error('Error',err)
+    }
+    let jsonData = JSON.parse(data);
+    const newData = JSON.parse(JSON.stringify(messageDatabaseItem));
+    jsonData.push(newData);
+
+    fs.writeFile('myapp/clientMessDatabase.json', JSON.stringify(jsonData, null, 2), (err) => {
+      if (err){
+        console.error('Error',err)
+    }
+    else{
+      console.log("ok");
+      res.status(201);
+      res.send();
+    }
+  }
+)
+  });
+
+  });
+
+
+app.get('/msg',(req, res) => { // otrzymujemy zapytanie o wiadomosci do clienta
   // co dostaje? -> Client ID 
-  // co zwracam? -> lista damych dla niego oraz zmieniam status wiadomosci na dostarczone do klienta  
-  res.status(310).send(`Get message: ${ req.query["client_id"]}`); 
+  // co zwracam? -> lista danych dla niego oraz zmieniam status wiadomosci na dostarczone do klienta  
+const fs = require('fs');
+const rawData = fs.readFileSync('myapp/clientDatabase.json', 'utf8');
+const jsonData = JSON.parse(rawData);
+
+jsonData.forEach(element => {
+    if(element.clientId === req.body["client_id"]){
+        console.log(`Finded: ${element.nick}, twoj id to: ${element.clientId}`);
+        res.status(200).send(`Approved, we have you in our Database ${element.nick}`)
+    }
+    
+});
+send(`Get message: ${ req.body["client_id"]}`); 
+  
 })
-
-
-
-
-
-
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)

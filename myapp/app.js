@@ -5,7 +5,7 @@ const port = 10000;
 
 
 const clientDatabase = [];
-const clientMess = [];
+const clientMessDatabase = [];
 
 //////////////// modul /////
 /*function checkId(UID,ClientDatabase)
@@ -83,8 +83,8 @@ app.post('/signin',(req, res) => { // zmieniam stan serwera
 });
 
 app.put('/msg',(req, res) => {  // rejest danych na serwerze 
-  // co dostaje? -> dostajemy dane od klienta do zapisu w bazie wiadomosci
-  // co zwracam? -> zwracam status http, czy pomyslnie sie udalo (200 to all OK)
+  // co dostaje? -> dostajemy dane od klienta do zapisu w bazie wiadomosci [DONE]
+  // co zwracam? -> zwracam status http, czy pomyslnie sie udalo (200 to all OK) [DONE]
   const messageDatabaseItem = {
     clientId : req.body.clientId,
     contentType : req.body.contentType,
@@ -93,31 +93,45 @@ app.put('/msg',(req, res) => {  // rejest danych na serwerze
     synchroStatus : false,
     date : Date.now()
   }
-  clientMess.push(messageDatabaseItem, (err) =>{
-    if(!err)
-    {
-      res.status(201);
+  console.log(messageDatabaseItem);
+  clientMessDatabase.push(messageDatabaseItem)
+  console.log(clientMessDatabase)
+
+  const fs = require('fs');
+  fs.readFile('myapp/clientMessDatabase.json', 'utf8', (err, data) => {
+    if (err){
+      console.error('Error',err)
+    }
+    let jsonData = JSON.parse(data);
+    const newData = JSON.parse(JSON.stringify(messageDatabaseItem));
+    jsonData.push(newData);
+
+    fs.writeFile('myapp/clientMessDatabase.json', JSON.stringify(jsonData, null, 2), (err) => {
+      if (err){
+        console.error('Error',err)
+    }
+    else{
+      console.log("ok");
+      res.status(200);
       res.send();
     }
-    else{error("PROBLEM", err);}
-  })
-  
-})
+  }
+)
+  });
 
-app.get('/msg',(req, res) => { // otrzymujemy
+  });
+
+
+app.get('/msg',(req, res) => { // otrzymujemy zapytanie o wiadomosci do clienta
   // co dostaje? -> Client ID 
-  // co zwracam? -> lista damych dla niego oraz zmieniam status wiadomosci na dostarczone do klienta  
-
- 
-
+  // co zwracam? -> lista danych dla niego oraz zmieniam status wiadomosci na dostarczone do klienta  
 const fs = require('fs');
 const rawData = fs.readFileSync('myapp/clientDatabase.json', 'utf8');
 const jsonData = JSON.parse(rawData);
 
-
 jsonData.forEach(element => {
     if(element.clientId === req.body["client_id"]){
-        console.log(`ZNALEZIONO: ${element.nick}, twoj id to: ${element.clientId}`);
+        console.log(`Finded: ${element.nick}, twoj id to: ${element.clientId}`);
         res.status(200).send(`Approved, we have you in our Database ${element.nick}`)
     }
     
@@ -125,12 +139,6 @@ jsonData.forEach(element => {
 send(`Get message: ${ req.body["client_id"]}`); 
   
 })
-
-
-
-
-
-
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)

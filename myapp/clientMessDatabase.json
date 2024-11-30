@@ -1,0 +1,34 @@
+[
+  {
+    "clientId": "1f8c4ff8-0c3e-420a-be62-6aede5741cc8",
+    "contentType": "message",
+    "content": "Siema, co tam slychac u Ciebie? :)",
+    "destinationClientId": "f2d9776b-9d97-4985-bd4b-9fe0ce535f58",
+    "synchroStatus": false,
+    "date": 1733006517190
+  },
+  {
+    "clientId": "f2d9776b-9d97-4985-bd4b-9fe0ce535f58",
+    "contentType": "message",
+    "content": "Siema, nie narzekam, tylko nauki strasznie duzo :), a u Ciebie?",
+    "destinationClientId": "1f8c4ff8-0c3e-420a-be62-6aede5741cc8",
+    "synchroStatus": false,
+    "date": 1733006783574
+  },
+  {
+    "clientId": "1f8c4ff8-0c3e-420a-be62-6aede5741cc8",
+    "contentType": "message",
+    "content": "To super slyszec, nauki duzo? jak zes se tak wybral to sie mecz :P ",
+    "destinationClientId": "f2d9776b-9d97-4985-bd4b-9fe0ce535f58",
+    "synchroStatus": false,
+    "date": 1733006882803
+  },
+  {
+    "clientId": "f2d9776b-9d97-4985-bd4b-9fe0ce535f58",
+    "contentType": "message",
+    "content": "A wiem wiem, ale jestem pelen nadziei bo coraz wiecej rozumiem :)",
+    "destinationClientId": "1f8c4ff8-0c3e-420a-be62-6aede5741cc8",
+    "synchroStatus": false,
+    "date": 1733006968859
+  }
+]
