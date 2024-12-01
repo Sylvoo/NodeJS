@@ -6,6 +6,7 @@ const port = 10000;
 
 const clientDatabase = [];
 const clientMessDatabase = [];
+var contentBox = [];
 
 //////////////// modul /////
 /*function checkId(UID,ClientDatabase)
@@ -126,19 +127,32 @@ app.get('/msg',(req, res) => { // otrzymujemy zapytanie o wiadomosci do clienta
   // co dostaje? -> Client ID 
   // co zwracam? -> lista danych dla niego oraz zmieniam status wiadomosci na dostarczone do klienta  
 const fs = require('fs');
-const rawData = fs.readFileSync('myapp/clientDatabase.json', 'utf8');
-const jsonData = JSON.parse(rawData);
+const clientData = fs.readFileSync('myapp/clientDatabase.json', 'utf8');
+const jsonClientData = JSON.parse(clientData);
 
-jsonData.forEach(element => {
-    if(element.clientId === req.body["client_id"]){
+jsonClientData.forEach(element => {
+    if(element.clientId === req.body["clientId"]){
+        //id = element.clientId;
+        nick = element.nick;
         console.log(`Finded: ${element.nick}, twoj id to: ${element.clientId}`);
-        res.status(200).send(`Approved, we have you in our Database ${element.nick}`)
     }
-    
+  });
+
+  index = 0;
+const messData = fs.readFileSync('myapp/clientMessDatabase.json','utf8');
+const jsonMessData = JSON.parse(messData)
+
+jsonMessData.forEach(element => {
+  if((element.destinationClientId === req.body["clientId"]) && (element.synchroStatus == false)){
+    index +=1;
+    content = element.content;
+    contentBox.push(index + ". " + content);
+  }
+}); 
+
+res.status(200).send(`We have new data for you:\n ${contentBox}`);
+contentBox = [];
 });
-send(`Get message: ${ req.body["client_id"]}`); 
-  
-})
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
