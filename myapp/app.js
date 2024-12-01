@@ -138,7 +138,7 @@ jsonClientData.forEach(element => {
     }
   });
 
-  index = 0;
+index = 0;
 const messData = fs.readFileSync('myapp/clientMessDatabase.json','utf8');
 const jsonMessData = JSON.parse(messData)
 
@@ -148,6 +148,12 @@ jsonMessData.forEach(element => {
     content = element.content;
     contentBox.push(index + ". " + content);
   }
+  jsonMessData.forEach(ele => {
+    if(ele.content === content){
+      ele.synchroStatus = true;
+      fs.writeFileSync('myapp/clientMessDatabase.json', JSON.stringify(jsonMessData, null, 2), 'utf8');
+    }
+  })
 }); 
 
 res.status(200).send(`We have new data for you:\n ${contentBox}`);
