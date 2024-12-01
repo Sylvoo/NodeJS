@@ -6,40 +6,37 @@ const port = 10000;
 
 const clientDatabase = [];
 const clientMessDatabase = [];
-
-//////////////// modul /////
-/*function checkId(UID,ClientDatabase)
-{
-  for ( i in ClientDatabase)
-  {
-    if (i == UID)
-    {
-      err = 1;
-    }
-  }
-  if (err = 1)
-    {
-      return false;
-    }
-    else return true;
-}
-*/
+var contentBox = [];
 
 function generateUuid() {
-  // sprawdza czy sie nie powtorzy, sprawdz czy nie istnieje wbudowana w Node metoda
-const { randomUUID } = require('crypto'); // Added in: node v14.17.0
-
-  
-x = randomUUID();
-/*if (checkId(x,ClientDatabase)){
-  return x
+  index = 0;
+  // zrob sprawdz czy sie nie powtarza [chyba DONE]
+const { randomUUID } = require('crypto');
+randId = randomUUID();
+const fs = require('fs');
+  fs.readFile('myapp/clientDatabase.json', 'utf8', (err, data) => {
+    if (err){
+      console.error('Error',err)
+    }
+    else{
+      let jsonData = JSON.parse(data);
+      jsonData.forEach(element =>{
+        if (element.clientId == randId){
+          index = 1;
+        }
+        else{
+          return error;
+        } 
+      })
+    }
+});
+if (index != 1){
+    return x;
+  }
+else{
+  return 1;
 }
-else generateUuid(); // unique value
-*/
-return x;
 }
-
-///////////////////////
 
 app.use(express.json());
 
@@ -83,8 +80,8 @@ app.post('/signin',(req, res) => { // zmieniam stan serwera
 });
 
 app.put('/msg',(req, res) => {  // rejest danych na serwerze 
-  // co dostaje? -> dostajemy dane od klienta do zapisu w bazie wiadomosci
-  // co zwracam? -> zwracam status http, czy pomyslnie sie udalo (200 to all OK)
+  // co dostaje? -> dostajemy dane od klienta do zapisu w bazie wiadomosci [DONE]
+  // co zwracam? -> zwracam status http, czy pomyslnie sie udalo (200 to all OK) [DONE]
   const messageDatabaseItem = {
     clientId : req.body.clientId,
     contentType : req.body.contentType,
@@ -112,7 +109,7 @@ app.put('/msg',(req, res) => {  // rejest danych na serwerze
     }
     else{
       console.log("ok");
-      res.status(201);
+      res.status(200);
       res.send();
     }
   }
@@ -123,22 +120,41 @@ app.put('/msg',(req, res) => {  // rejest danych na serwerze
 
 
 app.get('/msg',(req, res) => { // otrzymujemy zapytanie o wiadomosci do clienta
-  // co dostaje? -> Client ID 
-  // co zwracam? -> lista danych dla niego oraz zmieniam status wiadomosci na dostarczone do klienta  
+  // co dostaje? -> Client ID [DONE]
+  // co zwracam? -> lista danych dla niego oraz zmieniam status wiadomosci na dostarczone do klienta [DONE]  
 const fs = require('fs');
-const rawData = fs.readFileSync('myapp/clientDatabase.json', 'utf8');
-const jsonData = JSON.parse(rawData);
+const clientData = fs.readFileSync('myapp/clientDatabase.json', 'utf8');
+const jsonClientData = JSON.parse(clientData);
 
-jsonData.forEach(element => {
-    if(element.clientId === req.body["client_id"]){
+jsonClientData.forEach(element => {
+    if(element.clientId === req.body["clientId"]){
+        //id = element.clientId;
+        nick = element.nick;
         console.log(`Finded: ${element.nick}, twoj id to: ${element.clientId}`);
-        res.status(200).send(`Approved, we have you in our Database ${element.nick}`)
     }
-    
+  });
+
+index = 0;
+const messData = fs.readFileSync('myapp/clientMessDatabase.json','utf8');
+const jsonMessData = JSON.parse(messData)
+
+jsonMessData.forEach(element => {
+  if((element.destinationClientId === req.body["clientId"]) && (element.synchroStatus == false)){
+    index +=1;
+    content = element.content;
+    contentBox.push(index + ". " + content);
+  }
+  jsonMessData.forEach(ele => {
+    if(ele.content === content){
+      ele.synchroStatus = true;
+      fs.writeFileSync('myapp/clientMessDatabase.json', JSON.stringify(jsonMessData, null, 2), 'utf8');
+    }
+  })
+}); 
+
+res.status(200).send(`We have new data for you:\n ${contentBox}`);
+contentBox = [];
 });
-send(`Get message: ${ req.body["client_id"]}`); 
-  
-})
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)

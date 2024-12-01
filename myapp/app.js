@@ -8,39 +8,35 @@ const clientDatabase = [];
 const clientMessDatabase = [];
 var contentBox = [];
 
-//////////////// modul /////
-/*function checkId(UID,ClientDatabase)
-{
-  for ( i in ClientDatabase)
-  {
-    if (i == UID)
-    {
-      err = 1;
-    }
-  }
-  if (err = 1)
-    {
-      return false;
-    }
-    else return true;
-}
-*/
-
 function generateUuid() {
-  // sprawdza czy sie nie powtorzy, sprawdz czy nie istnieje wbudowana w Node metoda
-const { randomUUID } = require('crypto'); // Added in: node v14.17.0
-
-  
-x = randomUUID();
-/*if (checkId(x,ClientDatabase)){
-  return x
+  index = 0;
+  // zrob sprawdz czy sie nie powtarza [chyba DONE]
+const { randomUUID } = require('crypto');
+randId = randomUUID();
+const fs = require('fs');
+  fs.readFile('myapp/clientDatabase.json', 'utf8', (err, data) => {
+    if (err){
+      console.error('Error',err)
+    }
+    else{
+      let jsonData = JSON.parse(data);
+      jsonData.forEach(element =>{
+        if (element.clientId == randId){
+          index = 1;
+        }
+        else{
+          return error;
+        } 
+      })
+    }
+});
+if (index != 1){
+    return x;
+  }
+else{
+  return 1;
 }
-else generateUuid(); // unique value
-*/
-return x;
 }
-
-///////////////////////
 
 app.use(express.json());
 
@@ -124,8 +120,8 @@ app.put('/msg',(req, res) => {  // rejest danych na serwerze
 
 
 app.get('/msg',(req, res) => { // otrzymujemy zapytanie o wiadomosci do clienta
-  // co dostaje? -> Client ID 
-  // co zwracam? -> lista danych dla niego oraz zmieniam status wiadomosci na dostarczone do klienta  
+  // co dostaje? -> Client ID [DONE]
+  // co zwracam? -> lista danych dla niego oraz zmieniam status wiadomosci na dostarczone do klienta [DONE]  
 const fs = require('fs');
 const clientData = fs.readFileSync('myapp/clientDatabase.json', 'utf8');
 const jsonClientData = JSON.parse(clientData);
